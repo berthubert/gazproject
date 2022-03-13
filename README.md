@@ -1,5 +1,7 @@
 # Plotting natural gas deliveries 
 
+![](russian-gas.png)
+
 Data is sourced from the "European Network of Transmission System Operators for
 Gas", aka [ENTSO-G](https://entsog.eu).
 
@@ -30,5 +32,5 @@ Run `./get-data.sh`, but please don't do so too often!
 Requires 'jq' for some preprocessing.
 
 # To regenerate the graphs
-
+Use the provided Jupyter notebook, gazmon.ipynb.
 
