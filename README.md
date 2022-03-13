@@ -13,3 +13,7 @@ Big Russian piplines:
  * Germany:
    * 40 + 30 GW, Greifswald, [Nordstream 1](https://transparency.entsog.eu/#/points/data?points=ru-tso-0002itp-00120exit%2Cde-tso-0018itp-00297entry%2Cde-tso-0016itp-00251entry%2Cde-tso-0005itp-00491entry%2Cde-tso-0001itp-00247entry%2Cde-tso-0015itp-00250entry%2Cde-tso-0001itp-00251entry%2Cde-tso-0020itp-00454entry%2Cde-tso-0017itp-00247entry&zoom=hour)
 
+Dutch deliveries:
+ * To Germany
+   * 6-9GW, [Zevenaar](https://transparency.entsog.eu/#/points/data?points=nl-tso-0001itp-00259exit%2Cde-tso-0009itp-00060entry%2Cde-tso-0002itp-00026entry)
+   * 8 GW, [Winterswijk](https://transparency.entsog.eu/#/points/data?points=nl-tso-0001itp-00078exit%2Cde-tso-0009itp-00078entry)
