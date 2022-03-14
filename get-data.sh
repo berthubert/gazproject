@@ -1,8 +1,8 @@
 #!/bin/sh
 
 STARTDATE="2022-01-01"
-#ENDDATE="2022-03-12"
-ENDDATE=$(date +%Y-%m-%d)
+ENDDATE="2022-03-15"
+#ENDDATE=$(date +%Y-%m-%d)
 
 wget "https://transparency.entsog.eu/api/v1/operationalData?from=${STARTDATE}&indicator=Physical%20Flow&limit=-1&periodType=day&periodize=0&pointDirection=ua-tso-0001itp-00117exit&timezone=CET&to=${ENDDATE}" \
 	-O uzhgorod.json

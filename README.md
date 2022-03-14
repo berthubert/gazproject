@@ -8,6 +8,9 @@ Gas", aka [ENTSO-G](https://entsog.eu).
 The ENTSO-G service seems to be under quite some load. I recommend that you
 use the data files from here so as to not stress out their servers.
 
+In addition, I source data on the EU gas storage levels from
+[GIE](https://agsi.gie.eu/#/historical/eu) (Gas Infrastructure Europe). 
+
 Here are the big Russian pipelines I plot right now, with some power numbers
 from mid March:
 
@@ -30,6 +33,8 @@ Dutch deliveries:
 # To retrieve data yourself
 Run `./get-data.sh`, but please don't do so too often!
 Requires 'jq' for some preprocessing.
+
+Run `./get-storage.sh` to get EU gas storage levels.
 
 # To regenerate the graphs
 Use the provided Jupyter notebook, gazmon.ipynb.
