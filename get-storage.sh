@@ -14,4 +14,4 @@ curl 'https://agsi.gie.eu/api/data/eu' \
   -H 'Sec-Fetch-Dest: empty' \
   -H 'Referer: https://agsi.gie.eu/' \
   -H 'Accept-Language: en-US,en;q=0.9' \
-  --compressed > storage.json
+  --compressed | jq . > storage.json
