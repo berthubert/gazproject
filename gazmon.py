@@ -89,8 +89,19 @@ storage
 
 
 plt.figure()
+plt.plot(1000*storage.gasInStorage/(365*24))   # TWh
+plt.ylabel("GWyear")
+plt.grid()
+plt.ylim(0)
+plt.title("Energy content of EU gas storage sites")
+
+
+# In[7]:
+
+
+plt.figure()
 # GWh/d - 
-plt.plot(((storage.injection - storage.withdrawal)/24).rolling(1, center=True).mean())
+plt.plot(((storage.injection - storage.withdrawal)/24).rolling(7, center=True).mean())
 plt.grid()
 for y in range(2012, 2023): 
     plt.axvline(datetime.date(y, 3, 14), ls=':', color='red')
@@ -98,7 +109,7 @@ for y in range(2012, 2023):
 plt.ylabel("Gigawatts")
 
 
-# In[7]:
+# In[8]:
 
 
 plt.figure()
@@ -122,7 +133,7 @@ plt.xticks(rotation=25)
 plt.grid()
 
 
-# In[8]:
+# In[9]:
 
 
 
@@ -161,7 +172,7 @@ plt.tight_layout()
 plt.savefig(prefix+"livegraph.png")
 
 
-# In[9]:
+# In[11]:
 
 
 def makeGraph(fname, limit=-1, reserves=False):
@@ -203,9 +214,9 @@ def makeGraph(fname, limit=-1, reserves=False):
         labels = labels + list(["Start of invasion"])
         plt.axvline(datetime.date(2022, 2, 24), ls=':', color='red', label="Start of invasion")
         if(reserves==True):
-            plt.ylim(-20, 360)
+            plt.ylim(-40, 360)
     else:
-        plt.ylim(0, 200)
+        plt.ylim(-40, 200)
 
     if reserves==True:
         plt.title("Russian gas flow to Europe & EU storage withdrawals. Data from ENTSO-G & GIE,\n graph from https://berthub.eu/gazmon\nLast data point: "+enddate.strftime("%Y-%m-%d %H:%M"))

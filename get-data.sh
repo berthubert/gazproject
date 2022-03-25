@@ -1,7 +1,7 @@
-#!/bin/sh
-
+#!/bin/bash
+NOW=$(date +%s)
 STARTDATE="2022-01-01"
-ENDDATE="2022-03-19"
+ENDDATE=$(date -d @$[$NOW + 86400] +%Y-%m-%d)
 #ENDDATE=$(date +%Y-%m-%d)
 
 

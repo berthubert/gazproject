@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 curl 'https://agsi.gie.eu/api/data/eu' \
   -H 'Connection: keep-alive' \
@@ -14,4 +14,4 @@ curl 'https://agsi.gie.eu/api/data/eu' \
   -H 'Sec-Fetch-Dest: empty' \
   -H 'Referer: https://agsi.gie.eu/' \
   -H 'Accept-Language: en-US,en;q=0.9' \
-  --compressed | jq . > storage.json
+  --compressed --fail > storage-tmp.json && jq . < storage-tmp.json > storage.json
