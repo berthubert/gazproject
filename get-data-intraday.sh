@@ -18,29 +18,29 @@ echo $ENDDATE
 #https://transparency.entsog.eu/api/v1/operationalData?from=2022-02-15&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=sk-tso-0001itp-00117entry&timezone=CET&to=2022-03-16
 # 
 
-wget "https://transparency.entsog.eu/api/v1/operationalData?from=${STARTDATE}&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=bg-tso-0001itp-00549entry&timezone=CET&to=${ENDDATE}" \
+wget "https://transparency.entsog.eu/api/v1/operationalData?from=${STARTDATE}&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=bg-tso-0001itp-00549entry&timezone=UTC&to=${ENDDATE}" \
 	-O strandzha2-intraday.json && jq .operationalData < strandzha2-intraday.json   > strandzha2-data-intraday.json
 
 
-wget "https://transparency.entsog.eu/api/v1/operationalData?from=${STARTDATE}&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=sk-tso-0001itp-00117entry&timezone=CET&to=${ENDDATE}" \
+wget "https://transparency.entsog.eu/api/v1/operationalData?from=${STARTDATE}&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=sk-tso-0001itp-00117entry&timezone=UTC&to=${ENDDATE}" \
 	-O uzhgorod-intraday.json && jq .operationalData < uzhgorod-intraday.json   > uzhgorod-data-intraday.json
 
 
-wget "https://transparency.entsog.eu/api/v1/operationalData?from=${STARTDATE}&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=de-tso-0018itp-00297entry&timezone=CET&to=${ENDDATE}" \
+wget "https://transparency.entsog.eu/api/v1/operationalData?from=${STARTDATE}&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=de-tso-0018itp-00297entry&timezone=UTC&to=${ENDDATE}" \
 	-O nordstream-fluxsys-intraday.json && jq .operationalData < nordstream-fluxsys-intraday.json   > nordstream-fluxsys-data-intraday.json
 
-wget "https://transparency.entsog.eu/api/v1/operationalData?from=${STARTDATE}&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=de-tso-0016itp-00251entry&timezone=CET&to=${ENDDATE}" \
+wget "https://transparency.entsog.eu/api/v1/operationalData?from=${STARTDATE}&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=de-tso-0016itp-00251entry&timezone=UTC&to=${ENDDATE}" \
 	-O nordstream-opal-intraday.json && jq .operationalData < nordstream-opal-intraday.json   > nordstream-opal-data-intraday.json	
 
 
-wget "https://transparency.entsog.eu/api/v1/operationalData?from=${STARTDATE}&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=pl-tso-0001itp-00104entry&timezone=CET&to=${ENDDATE}" \
+wget "https://transparency.entsog.eu/api/v1/operationalData?from=${STARTDATE}&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=pl-tso-0001itp-00104entry&timezone=UTC&to=${ENDDATE}" \
 	-O yamal-kondratki-intraday.json && jq .operationalData < yamal-kondratki-intraday.json   > yamal-kondratki-data-intraday.json	
 
 
-wget "https://transparency.entsog.eu/api/v1/operationalData?from=${STARTDATE}&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=pl-tso-0002itp-00092entry&timezone=CET&to=${ENDDATE}" \
+wget "https://transparency.entsog.eu/api/v1/operationalData?from=${STARTDATE}&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=pl-tso-0002itp-00092entry&timezone=UTC&to=${ENDDATE}" \
 	-O yamal-wysokoje-intraday.json && jq .operationalData < yamal-wysokoje-intraday.json   > yamal-wysokoje-data-intraday.json	
 	
-#wget "https://transparency.entsog.eu/api/v1/operationalData?from=${STARTDATE}&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=ua-tso-0001itp-10008exit&timezone=CET&to=${ENDDATE}" \
+#wget "https://transparency.entsog.eu/api/v1/operationalData?from=${STARTDATE}&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=ua-tso-0001itp-10008exit&timezone=UTC&to=${ENDDATE}" \
 #	-O hermanowice-intraday.json
 #	
 #jq .operationalData < hermanowice-intraday.json   > hermanowice-data-intraday.json
