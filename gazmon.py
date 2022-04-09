@@ -3,7 +3,6 @@
 
 # In[1]:
 
-
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 
@@ -51,9 +50,10 @@ cleanUp(yamalW)
 cleanUp(hermanowice)
 cleanUp(strandzha2)
 
-begindate=max([uzhgorod.index.min(), nordstreamF.index.min(), nordstreamO.index.min(), yamalW.index.min(), yamalK.index.min(), hermanowice.index.min(), strandzha2.index.min()])
-
-enddate=min([uzhgorod.index.max(), nordstreamF.index.max(), nordstreamO.index.max(), yamalW.index.max(), yamalK.index.max(), hermanowice.index.max(), strandzha2.index.max()])
+# hermanowice.index.min(),
+begindate=max([uzhgorod.index.min(), nordstreamF.index.min(), nordstreamO.index.min(), yamalW.index.min(), yamalK.index.min(),  strandzha2.index.min()])
+# , hermanowice.index.max()
+enddate=min([uzhgorod.index.max(), nordstreamF.index.max(), nordstreamO.index.max(), yamalW.index.max(), yamalK.index.max(), strandzha2.index.max()])
 enddate
 
 
@@ -77,11 +77,18 @@ cleanUp(strandzha2_h, False)
 # In[5]:
 
 
-storage = pandas.read_json(prefix+"storage.json")
-storage["timestamp"]=pandas.to_datetime(storage["gasDayStartedOn"]) + datetime.timedelta(days=1)
+storage = pandas.read_json(prefix+"storage-data.json")
+
+storage["timestamp"]=pandas.to_datetime(storage["gasDayStart"]) + datetime.timedelta(days=1)
 storage.sort_values(["timestamp"], inplace=True)
 storage.set_index("timestamp", inplace=True)
 #storage=storage["2022-01-01":]
+storage["gasInStorage"]=storage['gasInStorage'].str.replace(',', '.').astype(float)
+storage["injection"]=storage['injection'].str.replace(',', '.').astype(float)
+
+storage["withdrawal"]=storage['withdrawal'].str.replace(',', '.').astype(float)
+
+
 storage
 
 
@@ -93,6 +100,9 @@ plt.plot(1000*storage.gasInStorage/(365*24))   # TWh
 plt.ylabel("GWyear")
 plt.grid()
 plt.ylim(0)
+#for y in range(2012, 2023): 
+#    plt.axvline(datetime.date(y, 3, 28), ls=':', color='red')
+
 plt.title("Energy content of EU gas storage sites")
 
 
@@ -104,7 +114,7 @@ plt.figure()
 plt.plot(((storage.injection - storage.withdrawal)/24).rolling(7, center=True).mean())
 plt.grid()
 for y in range(2012, 2023): 
-    plt.axvline(datetime.date(y, 3, 14), ls=':', color='red')
+    plt.axvline(datetime.date(y, 3, 28), ls=':', color='red')
 
 plt.ylabel("Gigawatts")
 
@@ -172,7 +182,7 @@ plt.tight_layout()
 plt.savefig(prefix+"livegraph.png")
 
 
-# In[11]:
+# In[10]:
 
 
 def makeGraph(fname, limit=-1, reserves=False):
@@ -187,9 +197,10 @@ def makeGraph(fname, limit=-1, reserves=False):
     nordstreamF=nordstreamF[begindate:enddate]
 
 
-    
-    pal = [ "#44344f", "#98a6d4", "#5b9279", "#c2f970", "#112233", "#FFD700", "#0057B8", "red"]
-    labels=[ "Hermanowice", "Yamal Wysokoje", "Yamal Kondratki", "Turkstream Strandzha2", "Nordstream OPAL", "Uzhgorod (Ukraine)", "Nordstream Fluxsys" ]
+    # "#44344f",
+    pal = [  "#98a6d4", "#5b9279", "#c2f970", "#112233", "#FFD700", "#0057B8", "red"]
+    labels=[  "Yamal Wysokoje", "Yamal Kondratki", "Turkstream Strandzha2", "Nordstream OPAL", "Uzhgorod (Ukraine)", "Nordstream Fluxsys" ]
+    # "Hermanowice",
     locbegindate = begindate
     if limit >= 0:
         locbegindate = enddate - datetime.timedelta(days=7)
@@ -197,7 +208,7 @@ def makeGraph(fname, limit=-1, reserves=False):
     plt.xlim(locbegindate, enddate)
     
     plt.stackplot(uzhgorod.index,
-                hermanowice.value/24000000,
+               # hermanowice.value/24000000,
                 yamalW.value/24000000,
                 yamalK.value/24000000,
                 strandzha2.value/24000000,
@@ -214,9 +225,9 @@ def makeGraph(fname, limit=-1, reserves=False):
         labels = labels + list(["Start of invasion"])
         plt.axvline(datetime.date(2022, 2, 24), ls=':', color='red', label="Start of invasion")
         if(reserves==True):
-            plt.ylim(-40, 360)
+            plt.ylim(-100, 360)
     else:
-        plt.ylim(-40, 200)
+        plt.ylim(-100, 200)
 
     if reserves==True:
         plt.title("Russian gas flow to Europe & EU storage withdrawals. Data from ENTSO-G & GIE,\n graph from https://berthub.eu/gazmon\nLast data point: "+enddate.strftime("%Y-%m-%d %H:%M"))
@@ -236,4 +247,10 @@ makeGraph(prefix+"/russian-gas.png")
 makeGraph(prefix+"/russian-gas-week.png", 7)
 makeGraph(prefix+"/russian-gas-reserves.png", reserves=True)
 makeGraph(prefix+"/russian-gas-reserves-week.png", 7, reserves=True)
+
+
+# In[ ]:
+
+
+
 
