@@ -1,9 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
+# In[12]:
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 
@@ -25,14 +23,14 @@ import matplotlib.animation as animation
 import numpy as np
 
 
-# In[2]:
+# In[13]:
 
 
 prefix="/home/ahu/git/gazproject/harvested/"
 imgprefix="/home/ahu/git/gazproject/"
 
 
-# In[3]:
+# In[14]:
 
 
 nleng=pandas.read_csv(prefix+"nlprod-year.csv")
@@ -60,7 +58,7 @@ nleng["otherpower"]=pandas.to_numeric(nleng["Other  - Actual Aggregated [MW]"])
 nleng.tail(4)
 
 
-# In[4]:
+# In[15]:
 
 
 def addATransport(df, name):
@@ -116,7 +114,7 @@ importpower=(transp["BZN|BE > BZN|NL [MW]"] + transp["BZN|DE-LU > BZN|NL [MW]"] 
 transp
 
 
-# In[5]:
+# In[16]:
 
 
 #print(stukje.tail(10))
@@ -145,36 +143,37 @@ plt.xlabel("UTC")
 plt.savefig(imgprefix+"nl-exports.svg")
 
 
-# In[6]:
+# In[35]:
 
 
 plt.figure()
-labels=["Nuke", "Coal", "Some wind", "Gas", "Other", "Waste", "Some solar"]
+labels=["Nuke", "Coal", "Gas", "Some of the wind", "Other", "Waste", "A bit of the solar"]
 start=datetime.datetime.now()-datetime.timedelta(days=2)
 restr=nleng[start:]
 plt.stackplot(restr.index,
               restr["nukepower"],
-                              restr["coalpower"],
+              restr["coalpower"],restr["gaspower"],
 
                 restr["windpower"],
-                restr["gaspower"], restr["otherpower"], restr["wastepower"], restr["solarpower"],
-              labels=labels
+                restr["otherpower"], restr["wastepower"], restr["solarpower"],
+              labels=labels,
+              colors=['orange', 'black', 'steelblue', 'green', 'purple', 'brown', 'yellow']
              )
 
 #plt.plot((restr["nukepower"]+restr["windpower"]+restr["coalpower"]+restr["gaspower"]+restr["otherpower"]).rolling("1h", center=True).mean(), label="Daily averaged sum")
 #plt.plot((restr["nukepower"]+restr["windpower"]+restr["coalpower"]+restr["gaspower"]+restr["otherpower"]+importpower).rolling("1h", center=True).mean(), label="Daily averaged sum imp")
 
-plt.plot(importpower[start:].rolling("1h", center=True).mean(), label="Electricity imports")
+plt.plot(importpower[start:].rolling("1h", center=True).mean(), color='red', label="Electricity imports")
 plt.legend(loc=2)
 plt.grid()
-plt.ylim(-4500,12000)
+#plt.ylim(-4500,12000)
 plt.xlabel("UTC")
 plt.ylabel("MW")
 plt.title("Dutch known electricity generation by source")
 plt.savefig(imgprefix+"known-generation.svg")
 
 
-# In[7]:
+# In[32]:
 
 
 plt.figure()
@@ -187,11 +186,11 @@ respower =(small["nukepower"]+small["coalpower"]+small["gaspower"]+small["otherp
 plt.plot(small[0], color='r', label="Net imports")
 plt.bar(small.index, np.maximum(small[0], 0), width=1/(24*4.0), label="Imports", color='grey')
 
-plt.bar(small.index, small["gaspower"], bottom=small[0], width=1/(24*4.0), label="Gas")
-plt.bar(small.index, small["coalpower"], bottom=small[0]+small["gaspower"], width=1/(24*4.0), label="Coal", color='black')
-plt.bar(small.index, small["nukepower"], bottom=small[0]+small["gaspower"]+small["coalpower"], width=1/(24*4.0), label="Nuclear")
+plt.bar(small.index, small["nukepower"], bottom=small[0], width=1/(24*4.0), label="Nuclear", color='orange')
+plt.bar(small.index, small["coalpower"], bottom=small[0]+small["nukepower"], width=1/(24*4.0), label="Coal", color='black')
+plt.bar(small.index, small["gaspower"], bottom=small[0]+small["nukepower"]+small["coalpower"], width=1/(24*4.0), color='steelblue', label="Gas")
 plt.bar(small.index, small["otherpower"], bottom=small[0]+small["nukepower"]+small["gaspower"]+small["coalpower"], width=1/(24*4.0), label="Other", color='purple')
-plt.bar(small.index, small["wastepower"], bottom=small[0]+small["otherpower"]+small["nukepower"]+small["gaspower"]+small["coalpower"], width=1/(24*4.0), label="Waste")
+plt.bar(small.index, small["wastepower"], bottom=small[0]+small["otherpower"]+small["nukepower"]+small["gaspower"]+small["coalpower"], width=1/(24*4.0), label="Waste", color='brown')
 
 
 handles, labels = plt.gca().get_legend_handles_labels()
@@ -203,6 +202,7 @@ plt.ylabel("MW")
 plt.title("Dutch non-renewable electricity generation by source")
 plt.axhline(y=0, color='black', linestyle='-')
 plt.savefig(imgprefix+"dutch-stack.svg")
+plt.savefig(imgprefix+"dutch-stack.png")
 
 
 # In[ ]:
@@ -237,7 +237,7 @@ weekavg=kpdf.groupby(["time"])[0].mean()
 
 plt.yticks(np.arange(-5000, 10000, 1000))
 
-plt.ylim(-3000)
+plt.ylim(-4000)
 plt.grid()
 plt.legend(loc=2)
 plt.ylabel("MW")
