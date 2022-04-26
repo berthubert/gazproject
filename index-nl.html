@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta charset="utf-8">
+<style>#forkongithub a{background:#FFD700;color:#0057B8;text-decoration:none;font-family:arial,sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:1rem;line-height:2rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:#c11;color:#fff;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:absolute;display:block;top:0;right:0;width:200px;overflow:hidden;height:200px;z-index:9999;}#forkongithub a{width:200px;position:absolute;top:60px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);-ms-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);box-shadow:4px 4px 10px rgba(0,0,0,0.8);}}</style><span id="forkongithub"><a href="https://github.com/berthubert/gazproject">Fork me on GitHub</a></span>
+<title>Dutch known electricity generation</title>
+</head>
+<body>
+<center>
+Dutch electricity generation, imports and exports. Data from <a
+href="https://www.tennet.eu/">TenneT</a> via <a
+href="https://entsoe.eu">ENTSO-E</a>.
+<br/>
+<font color="red">Be careful! These graphs are experimental.</font>
+</center>
+<p style="width:80%">
+Many websites <a href="https://energieopwek.nl">provide pretty</a> and seemingly
+<a href="https://co2monitor.nl/">comprehensive data</a> about Dutch
+electricity production and consumption. Almost all of these sites report
+data from the same <a href="https://www.netanders.nl/">predicitive
+model</a>. Since <a
+href="https://berthub.eu/articles/posts/dutch-electrical-power-figures-2/">official Dutch
+electricity statistics are not very complete</a>, a lot of assumptions and calculations are required to get to
+pretty graphs showing solar and (actual) wind production.
+</p>
+<p style="width:80%">
+In contrast, on this page you'll find only straight data without modeling.
+This means no pretty graph of CO<sub>2</sub> emissions saved, since we can't
+really tell. This site however can function as an alternate look on the output of
+opaque models - if things are looking good here as well (from a renewables
+perspective), they probably are good.
+</p>
+<center>
+<img style="width:60%" src="known-generation.svg">
+</center>
+<p>The graph above shows known sources of Dutch electricity production.
+  Surprisingly, there is a lot of unreported generation going on. This
+  includes almost all solar electricity, plus tons of wind turbines.</p>
+<center>
+  <img style="width:60%" src="dutch-stack.svg">
+</center>
+<p>This is a complicated graph, but it offers a lot of information.
+  Countries produce electricity, but there is also transmission between
+  countries. This graph starts with calculating net imports or exports, and
+  that is the red line in the plot.</p>
+<p>
+  If energy is being imported, the red line is above the x-axis, and in that
+  case the graph is pretty straightforward: it shows all non-renewable
+  electricity production in the country, plus everything imported.
+</p>
+<p>
+  If energy is being exported, things are a bit more complicated. An example
+  may help. If we export 3000 MW of electrical power, while 4000 MW of power
+  is produced by non-renewable means, this means the "national" non-renewable
+  production was 1000 MW. The rest was sold abroad.
+</p>
+<p>
+  If however we export 4000 MW of electrical power, but only generate 2000 MW
+  non-renewably, this means we can confidently claim that all our own
+  electrical needs were satisfied renewably. When this happens, there is empty
+  space between the power plot and the x-axis.
+</p>
+<center>
+  <img style="width:60%" src="nlduck.svg">
+</center>
+<br/>
+<center>
+  <img style="width:60%" src="nl-exports.svg">
+</center>
+<br/>
+All data and scripts are <a
+                           href="https://github.com/berthubert/gazproject">on GitHub</a>. 
+Page by <a href="https://berthub.eu/">bert hubert</a>, bert@hubertnet.nl or <a
+                                                                              href="https://twitter.com/bert_hu_bert">@bert_hu_bert</a>.
+</body>
+</htlm>
