@@ -3,7 +3,7 @@
 NOW=$(date +%s)
 
 
-STARTDATE=$(date -d @$[$NOW - 86400] +%Y-%m-%d)
+STARTDATE=$(date -d @$[$NOW - 2*86400] +%Y-%m-%d)
 ENDDATE=$(date -d @$[$NOW + 86400] +%Y-%m-%d)
 
 echo $STARTDATE
@@ -17,6 +17,8 @@ echo $ENDDATE
 #                                             ua-tso-0001itp-00117exit
 #https://transparency.entsog.eu/api/v1/operationalData?from=2022-02-15&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=sk-tso-0001itp-00117entry&timezone=CET&to=2022-03-16
 # 
+
+#wget "https://transparency.entsog.eu/api/v1/operationalData?pointDirection=bg-tso-0001itp-00549entry&from=${STARTDATE}&to=${ENDDATE}&indicator=Physical%20Flow&periodType=hour&timezone=UTC&limit=-1&dataset=1&directDownload=true" \
 
 wget "https://transparency.entsog.eu/api/v1/operationalData?from=${STARTDATE}&indicator=Physical%20Flow&limit=-1&periodType=hour&periodize=0&pointDirection=bg-tso-0001itp-00549entry&timezone=UTC&to=${ENDDATE}" \
 	-O strandzha2-intraday.json && jq .operationalData < strandzha2-intraday.json   > strandzha2-data-intraday.json
