@@ -1,6 +1,14 @@
 <html>
 <head>
 <meta charset="utf-8">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@bert_hu_bert">
+<meta name="twitter:creator" content="@bert_hu_bert">
+<meta name="twitter:title" content="Dutch electrical power numbers">
+<meta name="twitter:description" content="A 'live' look at Dutch electrical power generation, consumption, imports and exports.">
+<meta name="twitter:image" content="https://berthub.eu/nlelec/dutch-stack.png">
+<meta http-equiv="refresh" content="900; URL=https://berthub.eu/nlelec/">
+
 <style>#forkongithub a{background:#FFD700;color:#0057B8;text-decoration:none;font-family:arial,sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:1rem;line-height:2rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:#c11;color:#fff;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:absolute;display:block;top:0;right:0;width:200px;overflow:hidden;height:200px;z-index:9999;}#forkongithub a{width:200px;position:absolute;top:60px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);-ms-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);box-shadow:4px 4px 10px rgba(0,0,0,0.8);}}</style><span id="forkongithub"><a href="https://github.com/berthubert/gazproject">Fork me on GitHub</a></span>
 <title>Dutch known electricity generation</title>
 </head>
@@ -16,8 +24,8 @@ href="https://entsoe.eu">ENTSO-E</a>.
 Many websites <a href="https://energieopwek.nl">provide pretty</a> and seemingly
 <a href="https://co2monitor.nl/">comprehensive data</a> about Dutch
 electricity production and consumption. Almost all of these sites report
-data from the same <a href="https://www.netanders.nl/">predicitive
-model</a>. Since <a
+data from the same <a href="https://www.netanders.nl/">predictive
+model</a> (owned by Dutch national gas company Gasunie). Since <a
 href="https://berthub.eu/articles/posts/dutch-electrical-power-figures-2/">official Dutch
 electricity statistics are not very complete</a>, a lot of assumptions and calculations are required to get to
 pretty graphs showing solar and (actual) wind production.
@@ -33,8 +41,11 @@ perspective), they probably are good.
 <img style="width:60%" src="known-generation.svg">
 </center>
 <p>The graph above shows known sources of Dutch electricity production.
-  Surprisingly, there is a lot of unreported generation going on. This
-  includes almost all solar electricity, plus tons of wind turbines.</p>
+  Surprisingly, <a href="https://berthub.eu/articles/posts/dutch-electrical-power-figures-2/">a lot of unreported generation is going
+  on</a>. This
+  includes almost all solar electricity, plus tons of wind turbines and <a
+  href="https://en.wikipedia.org/wiki/Cogeneration">combined heat &amp;
+  power</a> production. These are not in the graph.</p>
 <center>
   <img style="width:60%" src="dutch-stack.svg">
 </center>
@@ -59,14 +70,28 @@ perspective), they probably are good.
   electrical needs were satisfied renewably. When this happens, there is empty
   space between the power plot and the x-axis.
 </p>
+<p>
+  The area above the x-axis is for Dutch national consumption. Anything
+  below the x-axis is for exports.
+</p>
 <center>
   <img style="width:60%" src="nlduck.svg">
 </center>
+<p>This is the 'non-renewable <a
+href="https://en.wikipedia.org/wiki/Duck_curve">duck curve</a>', showing for
+the past week how coal, gas, nuclear, waste and 'other' power production for
+national use developed. The graph 'dips' if there is wind or if the sun
+shines.</p>
 <br/>
 <center>
   <img style="width:60%" src="nl-exports.svg">
 </center>
-<br/>
+<p>
+The Netherlands has interconnectors to Norway, Denmark, Germany, Belgium and
+the UK. Over these connectors flow gigawatts of energy. Often that power is
+merely transiting The Netherlands. The 'Total' line however shows how much
+electricity we are consuming from the world, or conversely, exporting to it.
+</p>
 All data and scripts are <a
                            href="https://github.com/berthubert/gazproject">on GitHub</a>. 
 Page by <a href="https://berthub.eu/">bert hubert</a>, bert@hubertnet.nl or <a
