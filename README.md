@@ -30,6 +30,13 @@ Dutch deliveries:
    * 6-9GW, [Zevenaar](https://transparency.entsog.eu/#/points/data?points=nl-tso-0001itp-00259exit%2Cde-tso-0009itp-00060entry%2Cde-tso-0002itp-00026entry)
    * 8 GW, [Winterswijk](https://transparency.entsog.eu/#/points/data?points=nl-tso-0001itp-00078exit%2Cde-tso-0009itp-00078entry)
 
+# Direct sources
+ENTSO-G is not perfect. Eustream and other TSOs also have their own
+statistics if you kow where to look:
+
+ * [Poland/Gaz System](https://swi.gaz-system.pl/swi/public/#!/sgt/renDaily?lang=en)
+
+
 # To retrieve data yourself
 Run `./get-data.sh`, but please don't do so too often!
 Requires 'jq' for some preprocessing.
