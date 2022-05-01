@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-# In[74]:
+# In[1]:
 
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
+import pytz
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -24,31 +25,40 @@ import matplotlib.animation as animation
 import numpy as np
 
 
-# In[75]:
+# In[2]:
 
 
 prefix="/home/ahu/git/gazproject/harvested/"
 imgprefix="/home/ahu/git/gazproject/"
 
 
-# In[87]:
+# In[3]:
 
 
 nleng=pandas.read_csv(prefix+"nlprod-year.csv")
-for d in range(2,31):
-    fname=prefix+"nlprod-202204"+str(d).zfill(2)+".csv"
-    try: 
-        nlday=pandas.read_csv(fname)
-    except:
-        break
-    nleng=pandas.concat([nleng,nlday])
+for m in range(4,6):
+    for d in range(1,31):
+        fname=prefix+"nlprod-2022"+str(m).zfill(2)+str(d).zfill(2)+".csv"
+        try: 
+            nlday=pandas.read_csv(fname)
+            print(fname)
+        except:
+            break
+        nleng=pandas.concat([nleng,nlday])
 
-nleng = nleng.drop_duplicates()
-nleng[["begin", "end"]] = nleng['MTU'].str.split(' - ', 1, expand=True)
-nleng["timestamp"]=pandas.to_datetime(nleng["begin"], format="%d.%m.%Y %H:%M", utc=True)
-nleng.sort_values(["timestamp"], inplace=True)
-nleng.set_index("timestamp", inplace=True)
 nleng=nleng[nleng["Fossil Gas  - Actual Aggregated [MW]"] != "-"]
+
+nleng[["begin", "end"]] = nleng['MTU'].str.split(' - ', 1, expand=True)
+#nleng["timestamp"]=pandas.to_datetime(nleng["begin"], format="%d.%m.%Y %H:%M", utc=True)
+nleng["timestamp"]=pandas.to_datetime(nleng["begin"], format="%d.%m.%Y %H:%M", utc=True) + 0.5 * (pandas.to_datetime(nleng["end"], format="%d.%m.%Y %H:%M (UTC)", utc=True)-pandas.to_datetime(nleng["begin"], format="%d.%m.%Y %H:%M", utc=True))
+
+
+nleng.sort_values(["timestamp"], inplace=True)
+nleng = nleng.drop_duplicates(subset="timestamp").copy()
+
+nleng.set_index("timestamp", inplace=True)
+
+
 nleng["gaspower"]=pandas.to_numeric(nleng["Fossil Gas  - Actual Aggregated [MW]"])
 nleng["coalpower"]=pandas.to_numeric(nleng["Fossil Hard coal  - Actual Aggregated [MW]"])
 nleng["solarpower"]=pandas.to_numeric(nleng["Solar  - Actual Aggregated [MW]"])
@@ -56,10 +66,11 @@ nleng["windpower"]=pandas.to_numeric(nleng["Wind Offshore  - Actual Aggregated [
 nleng["nukepower"]=pandas.to_numeric(nleng["Nuclear  - Actual Aggregated [MW]"])
 nleng["wastepower"]=pandas.to_numeric(nleng["Waste  - Actual Aggregated [MW]"])
 nleng["otherpower"]=pandas.to_numeric(nleng["Other  - Actual Aggregated [MW]"])
-nleng.tail(4)
+nleng=nleng.resample("15T").interpolate("time")
+print(nleng.tail(4))
 
 
-# In[88]:
+# In[4]:
 
 
 def addATransport(df, name):
@@ -67,20 +78,21 @@ def addATransport(df, name):
     nlyear=nlyear[nlyear[nlyear.columns[1]] != "-"] # filter out empty lines
     nlyear=nlyear[nlyear[nlyear.columns[2]] != "-"] # filter out empty lines
     
-    for d in range(2, 32):
-        try:
-            newday=pandas.read_csv(prefix+name+"-202204"+str(d).zfill(2)+".csv")
-            newday=newday[newday[newday.columns[1]] != "-"] # filter out empty lines
-            newday=newday[newday[newday.columns[2]] != "-"] # filter out empty lines
+    for m in range(4, 6):
+        for d in range(1, 32):
+            try:
+                newday=pandas.read_csv(prefix+name+"-2022"+str(m).zfill(2)+str(d).zfill(2)+".csv")
+                newday=newday[newday[newday.columns[1]] != "-"] # filter out empty lines
+                newday=newday[newday[newday.columns[2]] != "-"] # filter out empty lines
     
-            nlyear=pandas.concat([nlyear, newday])
-        except:
-            break
-    nltransp=nlyear.drop_duplicates(subset=['Time (UTC)'])
+                nlyear=pandas.concat([nlyear, newday])
+            except:
+                break
+    nltransp=nlyear.drop_duplicates(subset=['Time (UTC)']).copy()
                                                     
     print(nltransp.columns[1])
     nltransp[["begin", "end"]] = nltransp['Time (UTC)'].str.split(' - ', 1, expand=True)
-    nltransp["timestamp"]=pandas.to_datetime(nltransp["begin"], format="%d.%m.%Y %H:%M", utc=True)
+    nltransp["timestamp"]=pandas.to_datetime(nltransp["begin"], format="%d.%m.%Y %H:%M", utc=True) + 0.5 * (pandas.to_datetime(nltransp["end"], format="%d.%m.%Y %H:%M", utc=True)-pandas.to_datetime(nltransp["begin"], format="%d.%m.%Y %H:%M", utc=True))
     nltransp.sort_values(["timestamp"], inplace=True)
     nltransp.set_index("timestamp", inplace=True)
     
@@ -92,12 +104,11 @@ def addATransport(df, name):
     
     #plt.figure()
     #plt.title(name)
-    #plt.plot(nltransp[nltransp.columns[0]] - nltransp[nltransp.columns[1]])
-    nltransp=nltransp.resample("15T").interpolate("time")
     #plt.plot(nltransp[nltransp.columns[0]] - nltransp[nltransp.columns[1]], '-+')
+    nltransp=nltransp.resample("15T").interpolate("time")
+    #plt.plot(nltransp[nltransp.columns[0]] - nltransp[nltransp.columns[1]])
 
     if(len(df)==0):
-        print("Copying!")
         df=nltransp
     else:
         df=df.join(nltransp)
@@ -115,13 +126,13 @@ importpower=(transp["BZN|BE > BZN|NL [MW]"] + transp["BZN|DE-LU > BZN|NL [MW]"] 
 transp
 
 
-# In[89]:
+# In[5]:
 
 
 #print(stukje.tail(10))
 plt.figure()
 
-start=datetime.datetime.now()-datetime.timedelta(days=2)
+start=pytz.utc.localize(datetime.datetime.now()-datetime.timedelta(days=2))
 
 stukje=transp[start:]
 
@@ -144,12 +155,13 @@ plt.xlabel("UTC")
 plt.savefig(imgprefix+"nl-exports.svg")
 
 
-# In[90]:
+# In[6]:
 
 
 plt.figure()
 labels=["Nuke", "Coal", "Gas", "Some of the wind", "Other", "Waste", "A bit of the solar"]
-start=datetime.datetime.now()-datetime.timedelta(days=2)
+start=pytz.utc.localize(datetime.datetime.now()-datetime.timedelta(days=2))
+
 restr=nleng[start:]
 plt.stackplot(restr.index,
               restr["nukepower"],
@@ -179,27 +191,35 @@ plt.title("Dutch known electricity generation by source")
 plt.savefig(imgprefix+"known-generation.svg")
 
 
-# In[96]:
+# In[7]:
 
 
 plt.figure()
 labels=["Imports", "Nuke", "Coal", "Gas", "Other", "Waste"]
-start=datetime.datetime.now()-datetime.timedelta(days=2)
-restr=nleng[start:]
-plt.stackplot(restr[:importpower.index.max()].index,
-              importpower[start:],
-              restr[:importpower.index.max()]["nukepower"],
-              restr[:importpower.index.max()]["coalpower"],restr[:importpower.index.max()]["gaspower"],
+start=pytz.utc.localize(datetime.datetime.now()-datetime.timedelta(days=2))
 
-                restr[:importpower.index.max()]["otherpower"], restr[:importpower.index.max()]["wastepower"], 
+restr=nleng[start:importpower.index.max()]
+resimportpower=importpower[restr.index.min():restr.index.max()]
+
+print(len(restr[:resimportpower.index.max()]))
+print(len(resimportpower[start:]))
+print(len(restr[:resimportpower.index.max()]["nukepower"]))
+print(len(restr[:resimportpower.index.max()]["coalpower"]))
+
+plt.stackplot(restr[:resimportpower.index.max()].index,
+              resimportpower[start:],
+              restr[:resimportpower.index.max()]["nukepower"],
+              restr[:resimportpower.index.max()]["coalpower"],restr[:resimportpower.index.max()]["gaspower"],
+
+                restr[:resimportpower.index.max()]["otherpower"], restr[:resimportpower.index.max()]["wastepower"], 
               labels=labels,
               colors=['grey', 'orange', 'black', 'steelblue', 'purple', 'brown']
              )
 
 #plt.plot((restr["nukepower"]+restr["windpower"]+restr["coalpower"]+restr["gaspower"]+restr["otherpower"]).rolling("1h", center=True).mean(), label="Daily averaged sum")
-#plt.plot((restr["nukepower"]+restr["windpower"]+restr["coalpower"]+restr["gaspower"]+restr["otherpower"]+importpower).rolling("1h", center=True).mean(), label="Daily averaged sum imp")
+#plt.plot((restr["nukepower"]+restr["windpower"]+restr["coalpower"]+restr["gaspower"]+restr["otherpower"]+resimportpower).rolling("1h", center=True).mean(), label="Daily averaged sum imp")
 
-plt.plot(importpower[start:], color='red', label="Electricity imports")
+plt.plot(resimportpower[start:], color='red', label="Electricity imports")
 #plt.legend(loc=2)
 labels = labels + list(["Electricity imports"])
 
@@ -219,7 +239,7 @@ plt.savefig(imgprefix+"dutch-stack.svg")
 plt.savefig(imgprefix+"dutch-stack.png")
 
 
-# In[93]:
+# In[8]:
 
 
 plt.figure()
@@ -258,7 +278,7 @@ plt.axhline(y=0, color='black', linestyle='-')
 
 
 
-# In[10]:
+# In[9]:
 
 
 #print(importpower.resample("15T").interpolate("time"))
@@ -273,7 +293,7 @@ kpdf["time"]=pandas.to_datetime(kpdf.index.time.astype(str))
 hh_mm = DateFormatter('%H:%M')
 plt.gca().xaxis.set_major_formatter(hh_mm)
 
-for dnum in [25, 26, 27, 28]:
+for dnum in [23,30]:
     daystr="2022-04-"+str(dnum).zfill(2)
     day=kpdf.loc[daystr]
     plt.plot(day.time, day[0], label=daystr, alpha=0.9)
@@ -293,4 +313,10 @@ plt.xlabel("UTC")
 
 plt.axhline(y=0, color='black', linestyle='-')
 plt.savefig(imgprefix+"nlduck.svg")
+
+
+# In[ ]:
+
+
+
 
