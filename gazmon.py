@@ -1,9 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding: utf-8
 
-# In[1]:
-
-
+# In[23]:
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 
@@ -16,13 +14,13 @@ from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
                                AutoMinorLocator, LogLocator, FixedLocator, FixedFormatter, NullLocator)
 
 
-# In[2]:
+# In[24]:
 
 
 prefix="/home/ahu/git/gazproject/"
 
 
-# In[3]:
+# In[35]:
 
 
 def cleanUp(v, fixTime=True):
@@ -58,7 +56,7 @@ enddate=min([uzhgorod.index.max(), nordstreamF.index.max(), nordstreamO.index.ma
 enddate
 
 
-# In[4]:
+# In[36]:
 
 
 yamalK_h = pandas.read_json(prefix+"yamal-kondratki-data-intraday.json")
@@ -75,7 +73,7 @@ cleanUp(uzhgorod_h, False)
 cleanUp(strandzha2_h, False)
 
 
-# In[5]:
+# In[37]:
 
 
 storage2 = pandas.read_csv(prefix+"storage.csv")
@@ -91,7 +89,7 @@ storage2["withdrawal"]=storage2['Withdrawal <small>GWh/d</small>'].astype(float)
 storage=storage2
 
 
-# In[6]:
+# In[38]:
 
 
 storage = pandas.read_json(prefix+"storage-data2.json")
@@ -109,7 +107,7 @@ storage["withdrawal"]=storage['withdrawal'] # .str.replace(',', '.').astype(floa
 storage
 
 
-# In[7]:
+# In[39]:
 
 
 plt.figure()
@@ -120,10 +118,10 @@ plt.ylim(0)
 #for y in range(2012, 2023): 
 #    plt.axvline(datetime.date(y, 3, 28), ls=':', color='red')
 
-plt.title("Energy content of EU gas storage sites")
+plt.title("Energy content of gas storage sites in the EU")
 
 
-# In[8]:
+# In[40]:
 
 
 plt.figure()
@@ -136,7 +134,7 @@ for y in range(2012, 2023):
 plt.ylabel("Gigawatts")
 
 
-# In[9]:
+# In[41]:
 
 
 plt.figure()
@@ -146,7 +144,7 @@ plt.figure()
 plt.plot(yamalK.value/24/1000000, label="Yamal Kondratki")
 plt.plot(yamalW.value/24/1000000, label="Yamal Wysokoje")
 #plt.plot(hermanowice.value/24/1000000, label="Hermanowice")
-#plt.plot(strandzha2.value/24/1000000, label="Turkstream Strandzha2")
+plt.plot(strandzha2.value/24/1000000, label="Turkstream Strandzha2")
 
 #plt.xlim(begindate, enddate)
 #plt.plot((uzhgorod.value+yamalK.value+yamalW.value+nordstreamF.value+nordstreamO.value+hermanowice.value+strandzha2.value)/24000000, label="Sum")
@@ -160,7 +158,7 @@ plt.xticks(rotation=25)
 plt.grid()
 
 
-# In[10]:
+# In[42]:
 
 
 
@@ -200,39 +198,40 @@ plt.savefig(prefix+"livegraph.png")
 plt.savefig(prefix+"livegraph.svg")
 
 
-# In[11]:
+# In[52]:
 
 
 def makeGraph(fname, limit=-1, reserves=False):
     global yamalK, yamalW, uzhgorod, nordstreamF, nordstreamO, hermanowice, uzghorod, strandzha2
     plt.figure()
-    strandzha2=strandzha2[begindate:enddate]
 
-    yamalK=yamalK[begindate:enddate]
-    yamalW=yamalW[begindate:enddate]
-    nordstreamO=nordstreamO[begindate:enddate]
-    uzhgorod=uzhgorod[begindate:enddate]
-    nordstreamF=nordstreamF[begindate:enddate]
+    locbegindate = begindate
+    if limit >= 0:
+        locbegindate = enddate - datetime.timedelta(days=7)
+    
+    yamalWL=yamalW[locbegindate:enddate]  
+    yamalKL=yamalK[locbegindate:enddate]
+    strandzha2L=strandzha2[locbegindate:enddate]
+    nordstreamOL=nordstreamO[locbegindate:enddate]
+    
+
+    uzhgorodL=uzhgorod[locbegindate:enddate]
+    nordstreamFL=nordstreamF[locbegindate:enddate]
 
 
     # "#44344f",
     pal = [  "#98a6d4", "#5b9279", "#c2f970", "#112233", "#FFD700", "#0057B8", "red"]
     labels=[  "Yamal Wysokoje", "Yamal Kondratki", "Turkstream Strandzha2", "Nordstream OPAL", "Uzhgorod (Ukraine)", "Nordstream Fluxsys" ]
     # "Hermanowice",
-    locbegindate = begindate
-    if limit >= 0:
-        locbegindate = enddate - datetime.timedelta(days=7)
     
-    plt.xlim(locbegindate, enddate)
-    
-    plt.stackplot(uzhgorod.index,
+    plt.stackplot(uzhgorodL.index,
                # hermanowice.value/24000000,
-                yamalW.value/24000000,
-                yamalK.value/24000000,
-                strandzha2.value/24000000,
-                nordstreamO.value/24000000,
-                uzhgorod.value/24000000,              
-                nordstreamF.value/24000000, 
+                yamalWL.value/24000000,
+                yamalKL.value/24000000,
+                strandzha2L.value/24000000,
+                nordstreamOL.value/24000000,
+                uzhgorodL.value/24000000,              
+                nordstreamFL.value/24000000, 
                   
             colors=pal, labels=labels)
 
@@ -240,17 +239,20 @@ def makeGraph(fname, limit=-1, reserves=False):
     plt.ylabel("Gigawatt")
     plt.xticks(rotation=25)
     if(limit < 0):
-        labels = labels + list(["Start of invasion"])
+        labels = labels + list([ "Stop of Poland & Bulgaria", "Start of invasion"])
+        plt.axvline(datetime.date(2022, 4, 28), ls=':', color='black', label="Stop of Poland & Bulgaria")      
         plt.axvline(datetime.date(2022, 2, 24), ls=':', color='red', label="Start of invasion")
-        if(reserves==True):
-            plt.ylim(-200, 360)
-    else:
-        plt.ylim(-200, 200)
 
+        #if(reserves==True):
+        #    plt.ylim(-200, 360)
+#    else:
+        #labels = labels + list([ "Stop of Poland & Bulgaria"])
+        #plt.axvline(datetime.date(2022, 4, 28), ls=':', color='black', label="Stop of Poland & Bulgaria")      
+    
     if reserves==True:
         plt.title("Russian gas flow to Europe & EU storage withdrawals. Data from ENTSO-G & GIE,\n graph from https://berthub.eu/gazmon\nLast data point: "+enddate.strftime("%Y-%m-%d %H:%M"))
 
-        plt.plot(-(storage.injection - storage.withdrawal)/24, label="EU storage withdrawal")
+        plt.plot((-(storage.injection - storage.withdrawal)/24)[locbegindate:enddate], label="EU storage withdrawal")
         labels = labels + list(["EU Storage withdrawal"])
         plt.legend(reversed(plt.legend().legendHandles), reversed(labels), loc=1)
     else:
