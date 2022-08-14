@@ -18,7 +18,12 @@ Dutch electricity generation, imports and exports. Data from <a
 href="https://www.tennet.eu/">TenneT</a> via <a
 href="https://entsoe.eu">ENTSO-E</a>.
 <br/>
-<font color="red">Be careful! These graphs are experimental.</font>
+<font color="red">Be careful! These graphs are experimental. <br/>
+<!--
+<strong>28th of April
+update: Dutch numbers are no longer updating over at ENTSO-E!</strong>
+-->
+</font>
 </center>
 <p style="width:80%">
 Many websites <a href="https://energieopwek.nl">provide pretty</a> and seemingly
@@ -74,6 +79,7 @@ perspective), they probably are good.
   The area above the x-axis is for Dutch national consumption. Anything
   below the x-axis is for exports.
 </p>
+
 <center>
   <img style="width:60%" src="nlduck.svg">
 </center>
@@ -84,6 +90,12 @@ national use developed. The graph 'dips' if there is wind or if the sun
 shines.</p>
 <br/>
 <center>
+  <img style="width:60%" src="day-ahead.svg">
+</center>
+<p>Today's "day ahead" Dutch electricity prices, per hour</p>
+<br/>
+
+<center>
   <img style="width:60%" src="nl-exports.svg">
 </center>
 <p>
@@ -92,6 +104,18 @@ the UK. Over these connectors flow gigawatts of energy. Often that power is
 merely transiting The Netherlands. The 'Total' line however shows how much
 electricity we are consuming from the world, or conversely, exporting to it.
 </p>
+<br/>
+<center>
+ <img style="width:60%" src="tennet-total.svg">
+</center>
+<p>
+Bit of a geeky graph showing logarithmically the various power sources that are
+reported by TenneT. Note that the solar part really is just a tiny tiny part
+of the actually installed capacity. It does however (probably) show when
+curtailment is going on because there is an excess of electrical power, or
+when our transport capabilities are overloaded.
+</p>
+
 All data and scripts are <a
                            href="https://github.com/berthubert/gazproject">on GitHub</a>. 
 Page by <a href="https://berthub.eu/">bert hubert</a>, bert@hubertnet.nl or <a
