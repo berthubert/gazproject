@@ -1,7 +1,9 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 # coding: utf-8
 
-# In[23]:
+# In[1]:
+
+
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 
@@ -14,13 +16,14 @@ from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
                                AutoMinorLocator, LogLocator, FixedLocator, FixedFormatter, NullLocator)
 
 
-# In[24]:
+
+# In[2]:
 
 
 prefix="/home/ahu/git/gazproject/"
 
 
-# In[35]:
+# In[3]:
 
 
 def cleanUp(v, fixTime=True):
@@ -56,7 +59,7 @@ enddate=min([uzhgorod.index.max(), nordstreamF.index.max(), nordstreamO.index.ma
 enddate
 
 
-# In[36]:
+# In[4]:
 
 
 yamalK_h = pandas.read_json(prefix+"yamal-kondratki-data-intraday.json")
@@ -73,27 +76,11 @@ cleanUp(uzhgorod_h, False)
 cleanUp(strandzha2_h, False)
 
 
-# In[37]:
+# In[5]:
 
 
-storage2 = pandas.read_csv(prefix+"storage.csv")
-storage2["timestamp"]=pandas.to_datetime(storage2["Gas Day Start"]) + datetime.timedelta(days=1)
-storage2.sort_values(["timestamp"], inplace=True)
-storage2.set_index("timestamp", inplace=True)
-#storage=storage["2022-01-01":]
-storage2["gasInStorage"]=storage2['Gas in storage <em>TWh</em>'].astype(float)
-storage2["injection"]=storage2['Injection <small>GWh/d</small>'].astype(float)
-
-storage2["withdrawal"]=storage2['Withdrawal <small>GWh/d</small>'].astype(float)
-
-storage=storage2
-
-
-# In[38]:
-
-
-storage = pandas.read_json(prefix+"storage-data2.json")
-
+storage = pandas.read_json(prefix+"storage-old.json")
+storage = pandas.concat([storage,pandas.read_json(prefix+"storage-new.json")])
 storage["timestamp"]=pandas.to_datetime(storage["gasDayStart"]) + datetime.timedelta(days=1)
 storage.sort_values(["timestamp"], inplace=True)
 storage.set_index("timestamp", inplace=True)
@@ -107,44 +94,47 @@ storage["withdrawal"]=storage['withdrawal'] # .str.replace(',', '.').astype(floa
 storage
 
 
-# In[39]:
+# In[6]:
 
 
 plt.figure()
 plt.plot(1000*storage.gasInStorage/(365*24))   # TWh
-plt.ylabel("GWyear")
+plt.ylabel("GW*year")
 plt.grid()
 plt.ylim(0)
-#for y in range(2012, 2023): 
-#    plt.axvline(datetime.date(y, 3, 28), ls=':', color='red')
+plt.axvline(datetime.datetime.today(), ls=':', color='red')
+plt.axvline(datetime.datetime.today() - datetime.timedelta(days=365), ls=':', color='red')
+
+
 
 plt.title("Energy content of gas storage sites in the EU")
+plt.savefig(prefix+"gascontent.svg")
 
 
-# In[40]:
+# In[7]:
 
 
 plt.figure()
 # GWh/d - 
-plt.plot(((storage.injection - storage.withdrawal)/24).rolling(1, center=True).mean())
+plt.plot(((storage.injection - storage.withdrawal)/24).rolling(7, center=True).mean())
 plt.grid()
-for y in range(2012, 2023): 
-    plt.axvline(datetime.date(y, 3, 28), ls=':', color='red')
+for y in range(2021, 2023): 
+    plt.axvline(datetime.date(y, 6, 19), ls=':', color='red')
 
 plt.ylabel("Gigawatts")
 
 
-# In[41]:
+# In[8]:
 
 
 plt.figure()
-#plt.plot(uzhgorod.value/24/1000000, label="Uzhgorod")
-#plt.plot(nordstreamF.value/24/1000000, label="Nordstream Greifswald Fluxsys")
-#plt.plot(nordstreamO.value/24/1000000, label="Nordstream Greifswald Opal")
-plt.plot(yamalK.value/24/1000000, label="Yamal Kondratki")
-plt.plot(yamalW.value/24/1000000, label="Yamal Wysokoje")
+plt.plot(uzhgorod.value/24/1000000, label="Uzhgorod")
+plt.plot(nordstreamF.value/24/1000000, label="Nordstream Greifswald Fluxys")
+plt.plot(nordstreamO.value/24/1000000, label="Nordstream Greifswald Opal")
+#plt.plot(yamalK.value/24/1000000, label="Yamal Kondratki")
+#plt.plot(yamalW.value/24/1000000, label="Yamal Wysokoje")
 #plt.plot(hermanowice.value/24/1000000, label="Hermanowice")
-plt.plot(strandzha2.value/24/1000000, label="Turkstream Strandzha2")
+#plt.plot(strandzha2.value/24/1000000, label="Turkstream Strandzha2")
 
 #plt.xlim(begindate, enddate)
 #plt.plot((uzhgorod.value+yamalK.value+yamalW.value+nordstreamF.value+nordstreamO.value+hermanowice.value+strandzha2.value)/24000000, label="Sum")
@@ -158,8 +148,7 @@ plt.xticks(rotation=25)
 plt.grid()
 
 
-# In[42]:
-
+# In[9]:
 
 
 fig, ax1 = plt.subplots()
@@ -167,7 +156,7 @@ fig, ax1 = plt.subplots()
 ax1.plot((uzhgorod_h.value+yamalK_h.value+yamalW_h.value+nordstreamF_h.value+nordstreamO_h.value+strandzha2_h.value)/1000000, label="Sum")
 
 ax1.plot(uzhgorod_h.value/1000000, label="Uzhgorod")
-ax1.plot(nordstreamF_h.value/1000000, label="Nordstream Greifswald Fluxsys")
+ax1.plot(nordstreamF_h.value/1000000, label="Nordstream Greifswald Fluxys")
 ax1.plot(nordstreamO_h.value/1000000, label="Nordstream Greifswald Opal")
 ax1.plot(yamalK_h.value/1000000, label="Yamal Kondratki")
 ax1.plot(yamalW_h.value/1000000, label="Yamal Wysokoje")
@@ -185,7 +174,7 @@ ax2.set_ylabel('~M€/hour')
 ax2.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
 
 ax1.set_ylabel("Gigawatt")
-ax1.legend(loc=7)
+ax1.legend(loc=2)
 plt.title("Russian natural gas flow to Europe (~100€/MWh). Hourly, last data point: "+nordstreamF_h.index.max().strftime("%Y-%m-%d %H:%M")+" UTC\nData from ENTSO-G, graph by https://berthub.eu/gazmon")
 #ax1.xticks(rotation=25)
 ax1.tick_params(labelrotation=45)
@@ -198,7 +187,7 @@ plt.savefig(prefix+"livegraph.png")
 plt.savefig(prefix+"livegraph.svg")
 
 
-# In[52]:
+# In[12]:
 
 
 def makeGraph(fname, limit=-1, reserves=False):
@@ -221,7 +210,7 @@ def makeGraph(fname, limit=-1, reserves=False):
 
     # "#44344f",
     pal = [  "#98a6d4", "#5b9279", "#c2f970", "#112233", "#FFD700", "#0057B8", "red"]
-    labels=[  "Yamal Wysokoje", "Yamal Kondratki", "Turkstream Strandzha2", "Nordstream OPAL", "Uzhgorod (Ukraine)", "Nordstream Fluxsys" ]
+    labels=[  "Yamal Wysokoje", "Yamal Kondratki", "Turkstream Strandzha2", "Nordstream OPAL", "Uzhgorod (Ukraine)", "Nordstream Fluxys" ]
     # "Hermanowice",
     
     plt.stackplot(uzhgorodL.index,
@@ -245,19 +234,19 @@ def makeGraph(fname, limit=-1, reserves=False):
 
         #if(reserves==True):
         #    plt.ylim(-200, 360)
-#    else:
-        #labels = labels + list([ "Stop of Poland & Bulgaria"])
-        #plt.axvline(datetime.date(2022, 4, 28), ls=':', color='black', label="Stop of Poland & Bulgaria")      
+    #else:
+    #    labels = labels + list([ "Stop of Poland & Bulgaria"])
+    #    plt.axvline(datetime.date(2022, 4, 28), ls=':', color='black', label="Stop of Poland & Bulgaria")      
     
     if reserves==True:
         plt.title("Russian gas flow to Europe & EU storage withdrawals. Data from ENTSO-G & GIE,\n graph from https://berthub.eu/gazmon\nLast data point: "+enddate.strftime("%Y-%m-%d %H:%M"))
 
-        plt.plot((-(storage.injection - storage.withdrawal)/24)[locbegindate:enddate], label="EU storage withdrawal")
-        labels = labels + list(["EU Storage withdrawal"])
-        plt.legend(reversed(plt.legend().legendHandles), reversed(labels), loc=1)
+        plt.plot((+(storage.injection - storage.withdrawal)/24)[locbegindate:enddate], label="EU storage withdrawal")
+        labels = labels + list(["EU Storage injection"])
+        plt.legend(reversed(plt.legend().legendHandles), reversed(labels))
     else:
         plt.title("Russian gas flow to Europe. Data from ENTSO-G, graph from https://berthub.eu/gazmon\nLast data point: "+enddate.strftime("%Y-%m-%d %H:%M"))
-        plt.legend(reversed(plt.legend().legendHandles), reversed(labels), loc=2)
+        plt.legend(reversed(plt.legend().legendHandles), reversed(labels))
     
 
     plt.grid()
