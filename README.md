@@ -43,6 +43,11 @@ Requires 'jq' for some preprocessing.
 
 Run `./get-storage.sh` to get EU gas storage levels.
 
+NOTE! This tool can use a GIE API key, which you can request [on the GIE API
+page](https://agsi.gie.eu/account). Once you have a key, store it as
+`gie.key`. Sometimes `get-storage.sh` works without a key, sometimes it
+needs one.
+
 # To regenerate the graphs
 Use the provided Jupyter notebook, gazmon.ipynb.
 
