@@ -91,7 +91,7 @@ storage["injection"]=storage['injection']
 storage["withdrawal"]=storage['withdrawal'] # .str.replace(',', '.').astype(float)
 
 
-storage
+storage=storage[storage.gasInStorage < 10000]
 
 
 # In[6]:
@@ -104,6 +104,7 @@ plt.grid()
 plt.ylim(0)
 plt.axvline(datetime.datetime.today(), ls=':', color='red')
 plt.axvline(datetime.datetime.today() - datetime.timedelta(days=365), ls=':', color='red')
+plt.axvline(datetime.datetime.today() - datetime.timedelta(days=2*365), ls=':', color='red')
 
 
 
