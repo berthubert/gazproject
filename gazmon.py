@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # coding: utf-8
 
 # In[1]:
@@ -23,7 +23,7 @@ from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
 prefix="/home/ahu/git/gazproject/"
 
 
-# In[3]:
+# In[ ]:
 
 
 def cleanUp(v, fixTime=True):
@@ -59,7 +59,7 @@ enddate=min([uzhgorod.index.max(), nordstreamF.index.max(), nordstreamO.index.ma
 enddate
 
 
-# In[4]:
+# In[ ]:
 
 
 yamalK_h = pandas.read_json(prefix+"yamal-kondratki-data-intraday.json")
@@ -76,7 +76,7 @@ cleanUp(uzhgorod_h, False)
 cleanUp(strandzha2_h, False)
 
 
-# In[5]:
+# In[6]:
 
 
 storage = pandas.read_json(prefix+"storage-old.json")
@@ -90,11 +90,10 @@ storage["injection"]=storage['injection']
 
 storage["withdrawal"]=storage['withdrawal'] # .str.replace(',', '.').astype(float)
 
-
 storage=storage[storage.gasInStorage < 10000]
 
 
-# In[6]:
+# In[9]:
 
 
 plt.figure()
@@ -104,15 +103,25 @@ plt.grid()
 plt.ylim(0)
 plt.axvline(datetime.datetime.today(), ls=':', color='red')
 plt.axvline(datetime.datetime.today() - datetime.timedelta(days=365), ls=':', color='red')
+
 plt.axvline(datetime.datetime.today() - datetime.timedelta(days=2*365), ls=':', color='red')
 
+for dates in [[datetime.datetime.today() - datetime.timedelta(days=3*365-10), datetime.datetime(2020,4,20)],
+            [datetime.datetime.today() - datetime.timedelta(days=2*365), datetime.datetime(2021,4,20)],
+              [datetime.datetime.today() - datetime.timedelta(days=365), datetime.datetime(2022,4,20)],
+              [datetime.datetime.today() - datetime.timedelta(days=0),  datetime.datetime(2023,4,20)]]:
+    weekpart=storage[dates[0] - datetime.timedelta(days=7):dates[0]]
 
-
+    plt.plot([weekpart.index.min(), dates[1]], 
+         [1000*weekpart.head(1).gasInStorage/(365*24), 
+          1000*weekpart.head(1).gasInStorage/(365*24) + (dates[1]-weekpart.index.min()).days*1000*weekpart.gasInStorage.diff().mean()/(365*24)],
+        ':', color='black')
+    
 plt.title("Energy content of gas storage sites in the EU")
 plt.savefig(prefix+"gascontent.svg")
 
 
-# In[7]:
+# In[ ]:
 
 
 plt.figure()
@@ -125,7 +134,7 @@ for y in range(2021, 2023):
 plt.ylabel("Gigawatts")
 
 
-# In[8]:
+# In[ ]:
 
 
 plt.figure()
@@ -149,7 +158,7 @@ plt.xticks(rotation=25)
 plt.grid()
 
 
-# In[9]:
+# In[ ]:
 
 
 fig, ax1 = plt.subplots()
@@ -188,7 +197,7 @@ plt.savefig(prefix+"livegraph.png")
 plt.savefig(prefix+"livegraph.svg")
 
 
-# In[12]:
+# In[ ]:
 
 
 def makeGraph(fname, limit=-1, reserves=False):
@@ -258,6 +267,12 @@ makeGraph(prefix+"/russian-gas")
 makeGraph(prefix+"/russian-gas-week", 7)
 makeGraph(prefix+"/russian-gas-reserves", reserves=True)
 makeGraph(prefix+"/russian-gas-reserves-week", 7, reserves=True)
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
