@@ -2,7 +2,7 @@
 #curl 'https://agsi.gie.eu/api?continent=EU&from=2022-01-01&to=2022-06-22&page=1&size=365'  --fail > storage-tmp.json && jq .data < storage-tmp.json > storage-data3.json
 
 
-curl 'https://agsi.gie.eu/api?continent=EU&from=2020-01-01&to=2022-01-01&page=1&size=7000' \
+curl 'https://agsi.gie.eu/api?continent=EU&from=2019-11-20&to=2022-01-01&page=1&size=7000' \
   -H 'authority: agsi.gie.eu' \
   -H 'accept: application/json' \
   -H 'accept-language: en-US,en;q=0.9' \
