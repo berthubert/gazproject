@@ -2,8 +2,6 @@
 # coding: utf-8
 
 # In[1]:
-
-
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 
@@ -23,7 +21,7 @@ from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
 prefix="/home/ahu/git/gazproject/"
 
 
-# In[ ]:
+# In[3]:
 
 
 def cleanUp(v, fixTime=True):
@@ -76,7 +74,7 @@ cleanUp(uzhgorod_h, False)
 cleanUp(strandzha2_h, False)
 
 
-# In[6]:
+# In[12]:
 
 
 storage = pandas.read_json(prefix+"storage-old.json")
@@ -93,7 +91,7 @@ storage["withdrawal"]=storage['withdrawal'] # .str.replace(',', '.').astype(floa
 storage=storage[storage.gasInStorage < 10000]
 
 
-# In[9]:
+# In[18]:
 
 
 plt.figure()
@@ -103,10 +101,10 @@ plt.grid()
 plt.ylim(0)
 plt.axvline(datetime.datetime.today(), ls=':', color='red')
 plt.axvline(datetime.datetime.today() - datetime.timedelta(days=365), ls=':', color='red')
-
 plt.axvline(datetime.datetime.today() - datetime.timedelta(days=2*365), ls=':', color='red')
+plt.axvline(datetime.datetime.today() - datetime.timedelta(days=3*365), ls=':', color='red')
 
-for dates in [[datetime.datetime.today() - datetime.timedelta(days=3*365-10), datetime.datetime(2020,4,20)],
+for dates in [[datetime.datetime.today() - datetime.timedelta(days=3*365), datetime.datetime(2020,4,20)],
             [datetime.datetime.today() - datetime.timedelta(days=2*365), datetime.datetime(2021,4,20)],
               [datetime.datetime.today() - datetime.timedelta(days=365), datetime.datetime(2022,4,20)],
               [datetime.datetime.today() - datetime.timedelta(days=0),  datetime.datetime(2023,4,20)]]:
@@ -115,8 +113,9 @@ for dates in [[datetime.datetime.today() - datetime.timedelta(days=3*365-10), da
     plt.plot([weekpart.index.min(), dates[1]], 
          [1000*weekpart.head(1).gasInStorage/(365*24), 
           1000*weekpart.head(1).gasInStorage/(365*24) + (dates[1]-weekpart.index.min()).days*1000*weekpart.gasInStorage.diff().mean()/(365*24)],
-        ':', color='black')
-    
+        ':', label="Trend "+weekpart.index.min().strftime("%Y-%m-%d")+" to "+weekpart.index.max().strftime("%Y-%m-%d"))
+
+plt.legend()
 plt.title("Energy content of gas storage sites in the EU")
 plt.savefig(prefix+"gascontent.svg")
 
