@@ -68,8 +68,8 @@ uzhgorod_h = pandas.read_json(prefix+"uzhgorod-data-intraday.json")
 strandzha2_h = pandas.read_json(prefix+"strandzha2-data-intraday.json")
 cleanUp(yamalK_h, False)
 cleanUp(yamalW_h, False)
-cleanUp(nordstreamF_h, False)
-cleanUp(nordstreamO_h, False)
+#cleanUp(nordstreamF_h, False)
+#cleanUp(nordstreamO_h, False)
 cleanUp(uzhgorod_h, False)
 cleanUp(strandzha2_h, False)
 
@@ -137,7 +137,7 @@ plt.ylabel("Gigawatts")
 
 
 plt.figure()
-plt.plot(uzhgorod.value/24/1000000, label="Uzhgorod")
+plt.plot(uzhgorod.value/24/1000000, label="Uzhgorod (Ukraine)")
 plt.plot(nordstreamF.value/24/1000000, label="Nordstream Greifswald Fluxys")
 plt.plot(nordstreamO.value/24/1000000, label="Nordstream Greifswald Opal")
 #plt.plot(yamalK.value/24/1000000, label="Yamal Kondratki")
@@ -162,11 +162,11 @@ plt.grid()
 
 fig, ax1 = plt.subplots()
 
-ax1.plot((uzhgorod_h.value+yamalK_h.value+yamalW_h.value+nordstreamF_h.value+nordstreamO_h.value+strandzha2_h.value)/1000000, label="Sum")
+ax1.plot((uzhgorod_h.value+yamalK_h.value+yamalW_h.value+strandzha2_h.value)/1000000, label="Sum") # nordstreamF_h.value+nordstreamO_h.value+
 
-ax1.plot(uzhgorod_h.value/1000000, label="Uzhgorod")
-ax1.plot(nordstreamF_h.value/1000000, label="Nordstream Greifswald Fluxys")
-ax1.plot(nordstreamO_h.value/1000000, label="Nordstream Greifswald Opal")
+ax1.plot(uzhgorod_h.value/1000000, label="Uzhgorod (Ukraine)")
+#ax1.plot(nordstreamF_h.value/1000000, label="Nordstream Greifswald Fluxys")
+#ax1.plot(nordstreamO_h.value/1000000, label="Nordstream Greifswald Opal")
 ax1.plot(yamalK_h.value/1000000, label="Yamal Kondratki")
 ax1.plot(yamalW_h.value/1000000, label="Yamal Wysokoje")
 ax1.plot(strandzha2_h.value/1000000, label="Turkstream Strandzha2")
@@ -177,14 +177,14 @@ ax1.plot(strandzha2_h.value/1000000, label="Turkstream Strandzha2")
 
 ax2 = ax1.twinx()
 mn, mx = ax1.get_ylim() 
-eurpermwh=100
+eurpermwh=150
 ax2.set_ylim(1000 * mn * eurpermwh/1000000, 1000 * mx * eurpermwh/1000000)
 ax2.set_ylabel('~M€/hour')
 ax2.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
 
 ax1.set_ylabel("Gigawatt")
 ax1.legend(loc=2)
-plt.title("Russian natural gas flow to Europe (~100€/MWh). Hourly, last data point: "+nordstreamF_h.index.max().strftime("%Y-%m-%d %H:%M")+" UTC\nData from ENTSO-G, graph by https://berthub.eu/gazmon")
+plt.title("Russian natural gas flow to Europe (~150€/MWh). Hourly, last data point: "+strandzha2_h.index.max().strftime("%Y-%m-%d %H:%M")+" UTC\nData from ENTSO-G, graph by https://berthub.eu/gazmon")
 #ax1.xticks(rotation=25)
 ax1.tick_params(labelrotation=45)
 
@@ -218,11 +218,20 @@ def makeGraph(fname, limit=-1, reserves=False):
 
 
     # "#44344f",
-    pal = [  "#98a6d4", "#5b9279", "#c2f970", "#112233", "#FFD700", "#0057B8", "red"]
-    labels=[  "Yamal Wysokoje", "Yamal Kondratki", "Turkstream Strandzha2", "Nordstream OPAL", "Uzhgorod (Ukraine)", "Nordstream Fluxys" ]
+    pal = [  "#98a6d4", "#5b9279", "#c2f970", "#112233", "#FFD700", "#0057B8", "red"]  
+    labels=[  "Yamal Wysokoje", "Yamal Kondratki", "Turkstream Strandzha2",  "Nordstream OPAL", "Uzhgorod (Ukraine)", "Nordstream Fluxys" ]  # 
     # "Hermanowice",
+
+#ValueError: all the input array dimensions for the concatenation axis must match exactly, 
+#but along dimension 1, the array at index 0 has size 302 and the array at index 4 has size 301
+#                     301           302            302             302                 302                 301              302
+    for a in [uzhgorodL.index,  yamalWL.value, yamalKL.value, strandzha2L.value, nordstreamOL.value,  uzhgorodL.value, nordstreamFL.value]:
+        print(len(a))
+
+
+
     
-    plt.stackplot(uzhgorodL.index,
+    plt.stackplot(uzhgorodL.index, 
                # hermanowice.value/24000000,
                 yamalWL.value/24000000,
                 yamalKL.value/24000000,
